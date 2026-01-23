@@ -119,7 +119,6 @@ jobs:
         run: |
           echo "Starting to download the latest fnnas base image..."
           fnnas_base_version="${{ inputs.fnnas_base_version }}"
-          kernel_tags="${fnnas_base_version%%_*}"
           [[ -d "fnnas" ]] || mkdir -p fnnas
 
           latest_version=$(curl -s \
@@ -156,7 +155,6 @@ jobs:
           ln -sf /builder/fnnas ${{ github.workspace }}/fnnas
           ln -sf /builder/fnnas /home/runner/work/_actions/ophub/fnnas/main/fnnas
 
-          echo "kernel_tags=${kernel_tags}" >> ${GITHUB_ENV}
           echo "status=success" >> ${GITHUB_OUTPUT}
 
       - name: Compile the fnnas kernel [ ${{ inputs.debs_version }} ]
@@ -174,7 +172,7 @@ jobs:
         uses: ncipollo/release-action@main
         if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() }}
         with:
-          tag: kernel_${{ env.kernel_tags }}
+          tag: kernel_fnnas
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
           allowUpdates: true
           removeArtifacts: false
@@ -182,9 +180,9 @@ jobs:
           makeLatest: false
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
-            - FnNAS ${{ env.kernel_tags }} Dedicated Kernel. Based on official [dtbs](https://github.com/ophub/fnnas/releases/tag/kernel_fnnas) packages from `fnnas.com`,
+            - FnNAS Dedicated Kernel. Based on official [dtbs](https://github.com/ophub/fnnas/releases/tag/kernel_fnnas) packages from `fnnas.com`,
               and repackaged into .tar.gz format using the `rekernel` tool.
               It is optimized for batch packaging and supports online updates via the `fnnas-update` command.
-            - FnNAS ${{ env.kernel_tags }} 专用内核。基于 `fnnas.com` 官方提供的 [dtbs](https://github.com/ophub/fnnas/releases/tag/kernel_fnnas) 安装包，
+            - FnNAS 专用内核。基于 `fnnas.com` 官方提供的 [dtbs](https://github.com/ophub/fnnas/releases/tag/kernel_fnnas) 安装包，
               利用本仓库的 `rekernel` 工具重新封装为 .tar.gz 格式。
               该内核既适用于批量打包，也支持通过 `fnnas-update` 命令进行在线更新。
