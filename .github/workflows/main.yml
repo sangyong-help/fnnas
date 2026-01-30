@@ -1,0 +1,8 @@
+- name: Build FnNAS Image
+  uses: ophub/fnnas@main
+  with:
+    build_target: fnnas
+    fnnas_path: fnnas/*.img.xz
+    fnnas_board: s905mb
+    fnnas_kernel: 6.12.y
+    rootfs_expand: 16
